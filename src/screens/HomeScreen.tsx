@@ -9,13 +9,12 @@ export default function HomeScreen() {
         transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         className="max-w-4xl"
       >
-        <span className="section-label">Midterm</span>
+        <span className="section-label">Selected Portfolio</span>
         <h1 className="hero-title mb-12">
           Portfolio
         </h1>
         <p className="text-xl md:text-2xl text-primary-ink/60 font-light leading-relaxed max-w-2xl mx-auto opacity-80">
-          Name: Arcilla, Rafael Yeshua S. |
-          Section: BSIT 2-5
+          Exploring the intersection of architectural rigor and digital fluidness through experimental visual narratives.
         </p>
 
         <motion.div 

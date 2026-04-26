@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { UploadCloud, FileText, Code2, Terminal, Download, Eye, X } from 'lucide-react';
+import React from 'react';
+import { motion } from 'motion/react';
+import { UploadCloud, FileText, Code2, Terminal } from 'lucide-react';
 
 const categories = [
   { id: '01', title: 'Quiz', href: '#quiz-archive' },
@@ -15,8 +15,6 @@ interface ArchiveItem {
   description: string;
   type: 'code' | 'doc' | 'console';
   date?: string;
-  pdfUrl?: string;
-  content?: string; // For a simple text-based preview if PDF is unavailable
 }
 
 const activities: ArchiveItem[] = [
@@ -26,254 +24,76 @@ const activities: ArchiveItem[] = [
     description: 'A comprehensive Java console application managing budgets and expense categories through methods and logical validation.',
     type: 'code',
     date: 'April 11, 2026',
-    pdfUrl: '/pdfs/Act5.pdf',
-    content: `// Midterm Activity #5: Personal Expense Tracker
-import java.util.Scanner;
-
-public class ExpenseTrackerArcilla {
-    static void displayTitle(String userName) {
-        System.out.println("============================================");
-        System.out.println(" PERSONAL EXPENSE TRACKER");
-        System.out.println("============================================");
-        System.out.println(" Welcome, " + userName + "!");
-    }
-}`
   },
   {
     id: 'act-enroll',
     title: 'Enrollment Assessment System',
     description: 'Implementation of enrollment result logic based on entrance exams, interview scores, and strand recommendations.',
     type: 'console',
-    pdfUrl: '/pdfs/EnrollmentSystem.pdf',
   },
   {
     id: 'act-mem',
     title: 'Memory Management Exercise',
     description: 'Visualizing stack vs heap allocation, object references, and garbage collection eligibility for Employee instances.',
     type: 'doc',
-    pdfUrl: '/pdfs/MemoryManagement.pdf',
   },
   {
     id: 'act-atm',
     title: 'Basic ATM System Interface',
     description: 'Menu-driven console application simulating deposits, withdrawals, and balance inquiries.',
     type: 'console',
-    pdfUrl: '/pdfs/ATMSystem.pdf',
   },
   {
     id: 'act-01',
-    title: 'Activity 1: Variables',
+    title: 'Activity 1: Bitwise & Logic',
     description: 'Exploring bitwise OR, AND, and XOR operations in Java.',
     type: 'code',
-    pdfUrl: '/pdfs/Act1.pdf',
   },
   {
     id: 'act-02',
-    title: 'Activity 2: Operators',
+    title: 'Activity 2: Relational & Ternary',
     description: 'Demonstrating comparison operators and conditional ternary logic.',
     type: 'code',
-    pdfUrl: '/pdfs/Act2.pdf',
   },
   {
     id: 'act-03',
-    title: 'Activity 3',
+    title: 'Activity 3: Arithmetic Ops',
     description: 'Basic mathematical calculations: Addition, Subtraction, Multiplication, and Division.',
     type: 'code',
-    pdfUrl: '/pdfs/Act3.pdf',
   },
   {
     id: 'act-04',
-    title: 'Activity 4',
+    title: 'Activity 4: Logical Compounds',
     description: 'Complex logical evaluation using AND, OR, and Unary operators.',
     type: 'code',
-    pdfUrl: '/pdfs/Act4.pdf',
   },
 ];
 
-const PDFViewer = ({ item, onClose }: { item: ArchiveItem; onClose: () => void }) => {
-  // Use a simple state to track if we should show the iframe or the code simulation
-  // In this environment, we fallback to code simulation if the file isn't verified
-  const [useIframe, setUseIframe] = useState(false);
-
+const CategoryItem: React.FC<{ item: ArchiveItem }> = ({ item }) => {
   return (
     <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-primary-ink/95 backdrop-blur-xl p-4 md:p-12 lg:p-20"
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="group bg-surface-highlight p-8 border border-primary-ink/5 hover:border-accent-blue/30 transition-all duration-500 flex flex-col gap-4"
     >
-      <div 
-        onClick={(e) => e.stopPropagation()}
-        className="bg-white w-full max-w-6xl h-full flex flex-col relative overflow-hidden shadow-2xl border border-primary-ink/10"
-      >
-        <div className="flex justify-between items-center p-6 bg-surface-paper border-b border-primary-ink/5">
-          <div>
-            <h2 className="text-xl font-headline font-bold text-primary-ink">{item.title}</h2>
-            <span className="text-[10px] uppercase font-bold tracking-widest text-primary-ink/40">Resource Archive / {item.id}</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setUseIframe(!useIframe)}
-              className="text-[10px] uppercase font-bold tracking-widest bg-accent-blue/10 text-accent-blue px-3 py-1.5 rounded-sm hover:bg-accent-blue/20 transition-colors"
-            >
-              {useIframe ? "View Code" : "Try real PDF"}
-            </button>
-            <a
-              href={item.pdfUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden md:flex items-center gap-2 px-4 py-2 border border-primary-ink/10 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary-ink hover:bg-primary-ink/5 transition-all"
-            >
-              <Eye className="w-3 h-3" />
-              Open New Tab
-            </a>
-            <a
-              href={item.pdfUrl}
-              download
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-primary-ink/10 hover:bg-primary-ink/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary-ink transition-all"
-            >
-              <Download className="w-3 h-3" />
-              Download
-            </a>
-            <button 
-              onClick={onClose}
-              className="p-2 hover:bg-primary-ink/5 transition-colors group"
-            >
-              <X className="w-6 h-6 text-primary-ink/40 group-hover:text-primary-ink transition-colors" />
-            </button>
-          </div>
-        </div>
-        
-        <div className="flex-1 bg-surface-container relative overflow-hidden">
-          {useIframe && item.pdfUrl && item.pdfUrl !== '#' ? (
-            <div className="w-full h-full flex flex-col">
-              <div className="bg-accent-blue/5 p-4 text-[10px] text-accent-blue border-b border-accent-blue/10 text-center">
-                <strong>Attention:</strong> If you see the Home Page here, please upload <b>{item.pdfUrl.split('/').pop()}</b> to <b>public/pdfs/</b>
-              </div>
-              <iframe 
-                src={`${item.pdfUrl}#toolbar=0&navpanes=0`}
-                className="flex-1 w-full border-none bg-white"
-                title={item.title}
-              />
-            </div>
-          ) : (
-            <div className="w-full h-full overflow-y-auto p-12 font-mono text-sm text-primary-ink/70 leading-relaxed whitespace-pre-wrap bg-primary-ink/[0.02]">
-               <div className="max-w-3xl mx-auto">
-                 <div className="mb-12 pb-12 border-b border-primary-ink/5">
-                   <h4 className="text-xs uppercase tracking-widest font-bold text-primary-ink/30 mb-4">Submission Metadata</h4>
-                   <p className="text-xs italic text-primary-ink/40 mb-8">{item.description}</p>
-                   {item.content ? (
-                     <div className="bg-primary-ink/5 p-8 rounded-sm text-primary-ink/80 border border-primary-ink/5">
-                        {item.content}
-                     </div>
-                   ) : (
-                     <div className="text-center py-20 opacity-30 italic">
-                        No direct content preview available. Please use the "Try real PDF" toggle above once the file is uploaded.
-                     </div>
-                   )}
-                 </div>
-                 
-                 <div className="p-8 border border-dashed border-primary-ink/10 rounded-sm text-center">
-                    <p className="text-xs uppercase tracking-[0.2em] font-bold text-primary-ink/30 mb-4">Internal PDF Integration</p>
-                    <p className="text-[10px] text-primary-ink/20 italic">
-                      The "Real PDF" viewer is available via the toggle above. It expects files in the /public/pdfs/ folder.
-                    </p>
-                 </div>
-               </div>
-            </div>
-          )}
-        </div>
-
-        <div className="md:hidden p-4 border-t border-primary-ink/5 bg-surface-paper">
-          <a 
-             href={item.pdfUrl}
-             download
-             className="w-full flex items-center justify-center gap-2 py-4 bg-accent-blue text-white text-[10px] font-bold uppercase tracking-widest active:scale-95 transition-transform"
-          >
-            <Download className="w-4 h-4" />
-            Download PDF
-          </a>
-        </div>
+      <div className="flex justify-between items-start">
+        {item.type === 'code' ? <Code2 className="w-5 h-5 text-accent-blue" /> : 
+         item.type === 'doc' ? <FileText className="w-5 h-5 text-accent-blue" /> : 
+         <Terminal className="w-5 h-5 text-accent-blue" />}
+        <span className="text-[10px] uppercase font-bold tracking-widest text-primary-ink/20">{item.date || 'Midterm 2026'}</span>
+      </div>
+      <h6 className="font-headline font-bold text-base tracking-tight leading-tight group-hover:text-accent-blue transition-colors">
+        {item.title}
+      </h6>
+      <p className="text-xs text-primary-ink/50 leading-relaxed line-clamp-2">
+        {item.description}
+      </p>
+      <div className="mt-4 pt-4 border-t border-primary-ink/5 flex justify-between items-center">
+        <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary-ink/40">Archive ID: {item.id}</span>
+        <button className="text-[10px] font-bold uppercase text-accent-blue opacity-40 hover:opacity-100 transition-opacity">Details</button>
       </div>
     </motion.div>
-  );
-};
-
-const CategoryItem: React.FC<{ item: ArchiveItem }> = ({ item }) => {
-  const [showPreview, setShowPreview] = useState(false);
-
-  const handlePreview = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setShowPreview(true);
-  };
-
-  const handleDownload = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    // Default actual download behavior via anchor in UI is handled by the browser
-    if (item.pdfUrl === '#') {
-      e.preventDefault();
-      alert('File path not yet mapped for this entry.');
-    }
-  };
-
-  return (
-    <>
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="group bg-surface-highlight p-8 border border-primary-ink/5 hover:border-accent-blue/30 transition-all duration-500 flex flex-col gap-4 relative overflow-hidden"
-      >
-        <div className="flex justify-between items-start">
-          {item.type === 'code' ? <Code2 className="w-5 h-5 text-accent-blue" /> : 
-           item.type === 'doc' ? <FileText className="w-5 h-5 text-accent-blue" /> : 
-           <Terminal className="w-5 h-5 text-accent-blue" />}
-          <span className="text-[10px] uppercase font-bold tracking-widest text-primary-ink/20">{item.date || 'Midterm 2026'}</span>
-        </div>
-        
-        <h6 className="font-headline font-bold text-base tracking-tight leading-tight group-hover:text-accent-blue transition-colors">
-          {item.title}
-        </h6>
-        
-        <p className="text-xs text-primary-ink/50 leading-relaxed line-clamp-2">
-          {item.description}
-        </p>
-
-        <div className="mt-4 pt-4 border-t border-primary-ink/5 flex justify-between items-center bg-transparent">
-          <span className="text-[9px] uppercase font-extrabold tracking-widest text-primary-ink/40">Archive ID: {item.id}</span>
-          <div className="flex gap-2">
-            <button 
-              type="button"
-              onClick={handlePreview}
-              className="p-2 hover:bg-primary-ink/5 transition-colors group/btn" 
-              title="View PDF"
-            >
-              <Eye className="w-4 h-4 text-primary-ink/30 group-hover/btn:text-accent-blue" />
-            </button>
-            <a
-              href={item.pdfUrl}
-              download
-              onClick={handleDownload}
-              className="p-2 hover:bg-primary-ink/5 transition-colors group/btn" 
-              title="Download PDF"
-            >
-              <Download className="w-4 h-4 text-primary-ink/30 group-hover/btn:text-accent-blue" />
-            </a>
-          </div>
-        </div>
-
-        {/* Gloss Overlay */}
-        <div className="absolute top-0 left-0 w-full h-1 bg-accent-blue scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500" />
-      </motion.div>
-
-      <AnimatePresence>
-        {showPreview && (
-          <PDFViewer item={item} onClose={() => setShowPreview(false)} />
-        )}
-      </AnimatePresence>
-    </>
   );
 };
 
@@ -333,7 +153,7 @@ export default function MidtermScreen() {
           transition={{ delay: 0.3, duration: 1 }}
           className="text-xl text-primary-ink/60 font-light max-w-2xl mx-auto leading-relaxed border-l border-primary-ink/10 pl-8 text-left italic"
         >
-          Archive of Quiz, Seatwork, Activities and Exam
+          An archival display of progress and performance metrics. Systematic organization of Quizzes, Activities, Seatwork, and Examinations.
         </motion.p>
       </header>
 
